@@ -17,7 +17,7 @@ class ConvertState(StatesGroup):
 
 @router.message(CommandStart())
 async def cmd_start(message: Message):
-    await message.answer("Приветствую! Выберите валюту для конвертации:", 
+    await message.answer("Приветствую!(перед запуском бота не забывайте выбирать пункт старта) Выберите валюту для конвертации:", 
                         reply_markup=kb.main)
 
 async def convert_currency(amount: float, from_cur: str, to_cur: str) -> float:
@@ -53,6 +53,10 @@ async def handle_conversion_choice(message: Message, state: FSMContext):
     await state.set_state(ConvertState.waiting_amount)
     
     await message.answer(f"Введите сумму в {from_to[0]}:")
+
+@router.message(F.text == "Старт")
+async def handle_start_button(message: Message):
+    await cmd_start(message)
 
 @router.message(ConvertState.waiting_amount)
 async def handle_amount_input(message: Message, state: FSMContext):
